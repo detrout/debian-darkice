@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : LameLibEncoder.h
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/LameLibEncoder.h $
    
    Copyright notice:
 
@@ -67,7 +67,7 @@
  *  a static library.
  *
  *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @version $Revision: 553 $
  */
 class LameLibEncoder : public AudioEncoder, public virtual Reporter
 {

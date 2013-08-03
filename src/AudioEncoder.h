@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : AudioEncoder.h
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/AudioEncoder.h $
    
    Copyright notice:
 
@@ -53,7 +53,7 @@
  *  An audio encoder
  *
  *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @version $Revision: 553 $
  */
 class AudioEncoder : public Sink, public virtual Referable
 {

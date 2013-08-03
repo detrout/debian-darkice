@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : Connector.cpp
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/Connector.cpp $
    
    Copyright notice:
 
@@ -41,7 +41,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: Connector.cpp 474 2010-05-10 01:18:15Z rafael@riseup.net $";
+static const char fileid[] = "$Id: Connector.cpp 553 2013-07-15 05:50:56Z rafael@riseup.net $";
 
 
 /* ===============================================  local function prototypes */
@@ -271,7 +271,7 @@ Connector :: transfer ( unsigned long       bytes,
 
     unsigned char * buf = new unsigned char[bufSize];
 
-    reportEvent( 6, "Connector :: tranfer, bytes", bytes);
+    reportEvent( 6, "Connector :: transfer, bytes", bytes);
     
     for ( b = 0; !bytes || b < bytes; ) {
         unsigned int    d = 0;

@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : SolarisDspSource.h
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/SolarisDspSource.h $
    
    Copyright notice:
 
@@ -52,7 +52,7 @@
  *  An audio input based on Solaris /dev/audio devices
  *
  *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @version $Revision: 553 $
  */
 class SolarisDspSource : public AudioSource, public virtual Reporter
 {

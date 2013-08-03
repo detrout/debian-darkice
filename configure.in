@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(darkice, 1.0)
+AC_INIT(darkice, 1.2)
 AC_CONFIG_SRCDIR(src/DarkIce.cpp)
 AM_CONFIG_HEADER(src/config.h)
 
@@ -116,6 +116,44 @@ fi
 
 
 dnl-----------------------------------------------------------------------------
+dnl link the ogg / opus libraries if requested
+dnl-----------------------------------------------------------------------------
+AC_SUBST(OPUS_INCFLAGS)
+AC_SUBST(OPUS_LDFLAGS)
+
+AC_ARG_WITH(opus,
+[  --with-opus           use Ogg Opus for encoding opus streams [yes] ],
+    USE_OPUS=${withval}, USE_OPUS="yes" )
+AC_ARG_WITH(opus-prefix,
+[  --with-opus-prefix=DIR    alternate location for opus [/usr]
+                              look for libraries in OPUS-PREFIX/lib,
+                              for headers in OPUS-PREFIX/include],
+    CONFIG_OPUS_PREFIX="${withval}", CONFIG_OPUS_PREFIX="/usr")
+
+if test "x${USE_OPUS}" = "xyes" ; then
+    AC_MSG_CHECKING( [for opus libraries at ${CONFIG_OPUS_PREFIX}] )
+    LA_SEARCH_LIB( OGG_LIB_LOC, OGG_INC_LOC, libogg.a libogg.so, ogg/ogg.h,
+                   ${CONFIG_OPUS_PREFIX})
+    LA_SEARCH_LIB( OPUS_LIB_LOC, OPUS_INC_LOC, libopus.a libopus.so, opus/opus.h,
+                   ${CONFIG_OPUS_PREFIX})
+
+    if test "x${OGG_LIB_LOC}" != "x" -a \
+            "x${OPUS_LIB_LOC}" != "x" ; then
+
+        AC_DEFINE( HAVE_OPUS_LIB, 1, [build with Ogg Opus library] )
+        if test "x${OGG_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            OPUS_INCFLAGS="-I${OGG_INC_LOC}"
+        fi
+        OPUS_LDFLAGS="-L${OGG_LIB_LOC} -logg -lopus"
+        AC_MSG_RESULT( [found at ${CONFIG_OPUS_PREFIX}] )
+    else
+        AC_MSG_WARN( [not found, building without Ogg Opus])
+    fi
+else
+    AC_MSG_RESULT( [building without Ogg Opus] )
+fi
+
+dnl-----------------------------------------------------------------------------
 dnl link the faac library if requested
 dnl-----------------------------------------------------------------------------
 AC_SUBST(FAAC_INCFLAGS)
@@ -166,7 +204,7 @@ AC_ARG_WITH(aacplus-prefix,
 
 if test "x${USE_AACPLUS}" = "xyes" ; then
     AC_MSG_CHECKING( [for aacplus library at ${CONFIG_AACPLUS_PREFIX}] )
-    LA_SEARCH_LIB( AACPLUS_LIB_LOC, AACPLUS_INC_LOC, libaacplus.a libaacplus.so, sbr_main.h,
+    LA_SEARCH_LIB( AACPLUS_LIB_LOC, AACPLUS_INC_LOC, libaacplus.a libaacplus.so, aacplus.h,
                    ${CONFIG_AACPLUS_PREFIX})
     if test "x${AACPLUS_LIB_LOC}" != "x" ; then
         AC_DEFINE( HAVE_AACPLUS_LIB, 1, [build with aacplus library] )
@@ -262,6 +300,42 @@ if test "x${USE_ALSA}" = "xyes" ; then
     fi
 else
     AC_MSG_RESULT( [building without ALSA support] )
+fi
+
+
+dnl-----------------------------------------------------------------------------
+dnl link PULSEAUDIO sound system if requested 
+dnl-----------------------------------------------------------------------------
+AC_SUBST(PULSEAUDIO_INCFLAGS)
+AC_SUBST(PULSEAUDIO_LDFLAGS)
+
+AC_ARG_WITH(pulseaudio,
+[  --with-pulseaudio             use PULSEAUDIO sound system [yes] ],
+    USE_PULSEAUDIO=${withval}, USE_PULSEAUDIO="yes" )
+AC_ARG_WITH(pulseaudio-prefix,
+[  --with-pulseaudio-prefix=DIR      alternate location for PULSEAUDIO [/usr]
+                              look for libraries in PULSEAUDIO-PREFIX/lib,
+                              for headers in PULSEAUDIO-PREFIX/include],
+    CONFIG_PULSEAUDIO_PREFIX="${withval}", CONFIG_PULSEAUDIO_PREFIX="/usr")
+
+if test "x${USE_PULSEAUDIO}" = "xyes" ; then
+    AC_MSG_CHECKING( [for pulseaudio libraries at ${CONFIG_PULSEAUDIO_PREFIX}] )
+    LA_SEARCH_LIB( PULSEAUDIO_LIB_LOC, PULSEAUDIO_INC_LOC, libpulse.so, pulse/pulseaudio.h,
+                   ${CONFIG_PULSEAUDIO_PREFIX})
+
+    if test "x${PULSEAUDIO_LIB_LOC}" != "x" ; then
+
+        AC_DEFINE( HAVE_PULSEAUDIO_LIB, 1, [build with PULSEAUDIO sound system] )
+        if test "x${PULSEAUDIO_INC_LOC}" != "x${SYSTEM_INCLUDE}" ; then
+            PULSEAUDIO_INCFLAGS="-I${PULSEAUDIO_INC_LOC}"
+        fi
+        PULSEAUDIO_LDFLAGS="-L${PULSEAUDIO_LIB_LOC} -lpulse-simple -L${PULSEAUDIO_LIB_LOC} -lpulse"
+        AC_MSG_RESULT( [found at ${CONFIG_PULSEAUDIO_PREFIX}] )
+    else
+        AC_MSG_WARN( [not found, building without PULSEAUDIO support])
+    fi
+else
+    AC_MSG_RESULT( [building without PULSEAUDIO support] )
 fi
 
 

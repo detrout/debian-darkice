@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : FileSink.cpp
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/FileSink.cpp $
    
    Copyright notice:
 
@@ -106,7 +106,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: FileSink.cpp 474 2010-05-10 01:18:15Z rafael@riseup.net $";
+static const char fileid[] = "$Id: FileSink.cpp 553 2013-07-15 05:50:56Z rafael@riseup.net $";
 
 
 /* ===============================================  local function prototypes */
@@ -217,8 +217,10 @@ FileSink :: create ( void )                     throw ( Exception )
     if ( isOpen() ) {
         return false;
     }
-
-    if ( (fd = ::creat( fileName, S_IRUSR | S_IWUSR)) == -1 ) {
+    /* filemode default to 0666 */
+    const int filemode = (S_IRUSR|S_IWUSR|S_IWGRP|S_IRGRP|S_IROTH|S_IWOTH) ;
+    /* create the file */
+    if ( (fd = ::creat( fileName, filemode )) == -1 ) {
         reportEvent( 3, "can't create file", fileName, errno);
         return false;
     }

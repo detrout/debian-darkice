@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : BufferedSink.cpp
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/BufferedSink.cpp $
    
      the buffer is filled like this:
      
@@ -68,7 +68,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: BufferedSink.cpp 474 2010-05-10 01:18:15Z rafael@riseup.net $";
+static const char fileid[] = "$Id: BufferedSink.cpp 553 2013-07-15 05:50:56Z rafael@riseup.net $";
 
 
 /* ===============================================  local function prototypes */

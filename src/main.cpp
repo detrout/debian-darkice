@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : main.cpp
-   Version  : $Revision: 476 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/main.cpp $
    
    Abstract : 
 
@@ -71,7 +71,7 @@ static Ref<DarkIce>     darkice;
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: main.cpp 476 2010-05-10 01:30:13Z rafael@riseup.net $";
+static const char fileid[] = "$Id: main.cpp 553 2013-07-15 05:50:56Z rafael@riseup.net $";
 
 /*------------------------------------------------------------------------------
  *  Default config file name
@@ -111,7 +111,7 @@ main (
          << std::endl
          << "Copyright (c) 2000-2007, Tyrell Hungary, http://tyrell.hu/"
          << std::endl
-         << "Copyright (c) 2008-2010, Akos Maroy and Rafael Diniz" 
+         << "Copyright (c) 2008-2013, Akos Maroy and Rafael Diniz" 
          << std::endl
          << "This is free software, and you are welcome to redistribute it "
          << std::endl

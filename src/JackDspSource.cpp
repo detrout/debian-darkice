@@ -7,9 +7,9 @@
    Tyrell DarkIce
 
    File     : JackDspSource.cpp
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/JackDspSource.cpp $
    
    Copyright notice:
 
@@ -38,6 +38,12 @@
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#ifdef HAVE_STDIO_H
+#include <stdio.h>
+#else
+#error need stdio.h
 #endif
 
 #ifdef HAVE_UNISTD_H
@@ -89,7 +95,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: JackDspSource.cpp 474 2010-05-10 01:18:15Z rafael@riseup.net $";
+static const char fileid[] = "$Id: JackDspSource.cpp 553 2013-07-15 05:50:56Z rafael@riseup.net $";
 
 
 /* ===============================================  local function prototypes */
@@ -206,7 +212,7 @@ JackDspSource :: open ( void )                       throw ( Exception )
       snprintf(client_name, 255, "darkice-%d", getpid());
     }
 
-    if ((client = jack_client_new(client_name)) == NULL) {
+    if ((client = jack_client_open(client_name, (jack_options_t)0, NULL)) == NULL) {
         throw Exception( __FILE__, __LINE__, "JACK server not running?");
     }
     Reporter::reportEvent( 1, "Registering as JACK client", client_name);
@@ -253,10 +259,12 @@ JackDspSource :: open ( void )                       throw ( Exception )
 
 
     // Create a ring buffer for each channel
-    rb_size = 2
-            * jack_get_sample_rate(client)
-            * sizeof (jack_default_audio_sample_t);
-    for (c=0; c<getChannel(); c++) {
+    /* will take about 1 MB buffer for each channel */
+    rb_size = 5 /* number of seconds */
+            * jack_get_sample_rate(client) /* eg 48000 */
+            * sizeof (jack_default_audio_sample_t); /* eg 4 bytes */
+            
+    for (c=0; c < getChannel(); c++) {
         rb[c] = jack_ringbuffer_create(rb_size);
         if (!rb[c]) {
             throw Exception( __FILE__, __LINE__,
@@ -338,8 +346,8 @@ JackDspSource :: read (   void          * buf,
                           unsigned int    len )     throw ( Exception )
 {
     jack_nframes_t samples         = len / 2 / getChannel();
-    jack_nframes_t samples_read[2] = {0,0};
-    short        * output          = (short*)buf;
+    jack_nframes_t samples_read[2] = { 0, 0 };
+    short        * output          = (short*) buf;
     unsigned int c, n;
 
     if ( !isOpen() ) {
@@ -357,14 +365,14 @@ JackDspSource :: read (   void          * buf,
     // We must be sure to fetch as many data on both channels
     int minBytesAvailable = samples * sizeof( jack_default_audio_sample_t );
 
-    for (c=0; c<getChannel(); c++) {
+    for (c=0; c < getChannel(); c++) {
         int readable = jack_ringbuffer_read_space(rb[c]);
         if (readable < minBytesAvailable) {
             minBytesAvailable = readable;
         }
     }
 
-    for (c=0; c<getChannel(); c++) {    
+    for (c=0; c < getChannel(); c++) {    
         // Copy frames from ring buffer to temporary buffer
         // and then convert samples to output buffer
         int bytes_read = jack_ringbuffer_read(rb[c],
@@ -450,15 +458,26 @@ JackDspSource :: process_callback( jack_nframes_t nframes, void *arg )
     if (self->client == NULL) {
         return 0;
     }
-
+    
     /* copy data to ringbuffer; one per channel */
-    for (c=0; c < self->getChannel(); c++) {    
-        char *buf  = (char*)jack_port_get_buffer(self->ports[c], nframes);
-        size_t len = jack_ringbuffer_write(self->rb[c], buf, to_write);
-        if (len < to_write) {
-            Reporter::reportEvent( 1, "failed to write to ring ruffer");
-            return 1;
-         }
+    for (c=0; c < self->getChannel(); c++) {
+      /* check space */
+        size_t len;
+        if (jack_ringbuffer_write_space(self->rb[c]) < to_write) {
+            /* buffer is overflowing, skip the incoming data */
+            jack_ringbuffer_write_advance(self->rb[c], to_write); 
+            /* prevent blocking the ring buffer by updating internal pointers 
+             * jack will now not terminate on xruns
+             */
+            Reporter::reportEvent( 1, "ring buffer full, skipping data");
+            /* We do not return error to jack callback handler and keep going */
+        } else {
+            /* buffer has space, put data into ringbuffer */
+            len = jack_ringbuffer_write(self->rb[c], (char *) jack_port_get_buffer(
+                    self->ports[c], nframes), to_write);
+            if (len != to_write) 
+                Reporter::reportEvent( 1, "failed to write to ring buffer (can not happen)");
+        }
     }
 
     // Success

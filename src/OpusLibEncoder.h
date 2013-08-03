@@ -4,30 +4,30 @@
 
    Tyrell DarkIce
 
-   File     : VorbisLibEncoder.h
+   File     : OpusLibEncoder.h
    Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/VorbisLibEncoder.h $
-   
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/OpusLibEncoder.h $
+
    Copyright notice:
 
     This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License  
+    modify it under the terms of the GNU General Public License
     as published by the Free Software Foundation; either version 3
     of the License, or (at your option) any later version.
-   
+
     This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-   
+
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 ------------------------------------------------------------------------------*/
-#ifndef VORBIS_LIB_ENCODER_H
-#define VORBIS_LIB_ENCODER_H
+#ifndef OPUS_LIB_ENCODER_H
+#define OPUS_LIB_ENCODER_H
 
 #ifndef __cplusplus
 #error This is a C++ include file
@@ -40,10 +40,11 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_VORBIS_LIB
-#include <vorbis/vorbisenc.h>
+#ifdef HAVE_OPUS_LIB
+#include <opus/opus.h>
+#include <ogg/ogg.h>
 #else
-#error configure for Ogg Vorbis
+#error configure for Ogg Opus
 #endif
 
 
@@ -68,13 +69,130 @@
 /* =============================================================== data types */
 
 /**
- *  A class representing the ogg vorbis encoder linked as a shared object or
+ *  A struct for containing the ogg opus header format, sent at the stream
+ *  beginning.
+ *
+ *  @author $Author: rafael@riseup.net $
+ *  @version $Revision: 553 $
+ */
+struct OpusIdHeader {
+    char magic[8];              /* "OpusHead" */
+    unsigned char version;      /* Version (currently 1) */
+    unsigned char channels;     /* Number of channels */
+    unsigned short preskip;     /* Pre-skip */
+    unsigned int samplerate;    /* Original samplerate; informational only */
+    unsigned short gain;        /* Output gain, stored in Q7.8 in dB */
+    unsigned char chanmap;      /* 0 = mono or stereo L/R, 1=vorbis spec order, 2..254=reserved, 255=undef */
+
+    /**
+     * Build an Ogg packet from the header.
+     * @param packet output pointer, must be freed by caller
+     *
+     * @return number of bytes in packet.
+     */
+    inline int buildPacket( unsigned char** packet) throw ( Exception ) {
+        int i = 0;
+        // FIXME - doesn't support multistream
+        unsigned char* out = (unsigned char*)malloc(19);
+        if( out == NULL ) {
+             throw Exception( __FILE__, __LINE__, "cannot alloc buffer");
+        }
+        for( ; i < 8; i++) {
+            out[i] = magic[i];
+        }
+        out[i++] = version;
+        out[i++] = channels;
+        out[i++] = preskip & 0xff;
+        out[i++] = (preskip >> 8) & 0xff;
+        out[i++] = samplerate & 0xff;
+        out[i++] = (samplerate >> 8) & 0xff;
+        out[i++] = (samplerate >> 16) & 0xff;
+        out[i++] = (samplerate >> 24) & 0xff;
+        out[i++] = gain & 0xff;
+        out[i++] = (gain >> 8) & 0xff;
+        out[i++] = chanmap;
+        *packet = out;
+        return i;
+    }
+};
+
+/**
+ *  A struct for containing the ogg opus comment header format
+ *
+ *  @author $Author: rafael@riseup.net $
+ *  @version $Revision: 553 $
+ */
+struct OpusCommentHeader {
+    /**
+     * Struct for each tag pair, in the form of a UTF-8
+     * string, "TAG=value"
+     *
+     * @author $Author: rafael@riseup.net $
+     * @version $Revision: 553 $
+     */
+    struct Tags {
+        unsigned int tag_len;   /* For each tag, how long the following tag is */
+        char* tag_str;          /* For each tag, UTF-8 encoded string, in tag=value */
+    };
+    char magic[8];              /* "OpusTags" */
+    unsigned int vendor_length; /* Length of the vendor string */
+    char* vendor_string;        /* Vendor string -- parsed as utf-8 */
+    unsigned int num_tags;      /* Number of tags following */
+    Tags* tags;                 /* Pointer to allocated tag array */
+
+    /**
+     * Build an Ogg packet from the header.
+     * @param packet output pointer, must be freed by caller
+     *
+     * @return number of bytes in packet.
+     */
+    inline int buildPacket( unsigned char** packet) throw ( Exception ) {
+        int len = 8 + sizeof(unsigned int) * 2 + vendor_length;
+        int pos = 0;
+        for( unsigned int i = 0; i < num_tags; i++ )
+        {
+            len += sizeof(unsigned int) + tags[i].tag_len;
+        }
+        unsigned char* out = (unsigned char*)malloc(len);
+        if( out == NULL ) {
+             throw Exception( __FILE__, __LINE__, "cannot alloc buffer");
+        }
+        for( ; pos < 8; pos++) {
+            out[pos] = magic[pos];
+        }
+        out[pos++] = vendor_length & 0xff;
+        out[pos++] = (vendor_length >> 8) & 0xff;
+        out[pos++] = (vendor_length >> 16) & 0xff;
+        out[pos++] = (vendor_length >> 24) & 0xff;
+        for( unsigned int i = 0; i < vendor_length; i++ ) {
+            out[pos++] = vendor_string[i];
+        }
+        out[pos++] = num_tags & 0xff;
+        out[pos++] = (num_tags >> 8) & 0xff;
+        out[pos++] = (num_tags >> 16) & 0xff;
+        out[pos++] = (num_tags >> 24) & 0xff;
+        for( unsigned int i = 0; i < num_tags; i++ ) {
+            out[pos++] = tags[i].tag_len & 0xff;
+            out[pos++] = (tags[i].tag_len >> 8) & 0xff;
+            out[pos++] = (tags[i].tag_len >> 16) & 0xff;
+            out[pos++] = (tags[i].tag_len >> 24) & 0xff;
+            for( unsigned int j = 0; j < tags[i].tag_len; j++ ) {
+                out[pos++] = tags[i].tag_str[j];
+            }
+        }
+        *packet = out;
+        return len;
+    }
+};
+
+/**
+ *  A class representing the ogg opus encoder linked as a shared object or
  *  as a static library.
  *
  *  @author  $Author: rafael@riseup.net $
  *  @version $Revision: 553 $
  */
-class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
+class OpusLibEncoder : public AudioEncoder, public virtual Reporter
 {
     private:
 
@@ -84,29 +202,21 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         bool                            encoderOpen;
 
         /**
-         *  Ogg Vorbis library global info
+         *  Ogg Opus library global info
          */
-        vorbis_info                     vorbisInfo;
-
-        /**
-         *  Ogg Vorbis library global DSP state
-         */
-        vorbis_dsp_state                vorbisDspState;
-
-        /**
-         *  Ogg Vorbis library global block
-         */
-        vorbis_block                    vorbisBlock;
-
-        /**
-         *  Ogg Vorbis library global comment
-         */
-        vorbis_comment                  vorbisComment;
+        OpusEncoder*                    opusEncoder;
 
         /**
          *  Ogg library global stream state
          */
         ogg_stream_state                oggStreamState;
+
+        ogg_int64_t                     oggGranulePosition;
+        ogg_int64_t                     oggPacketNumber;
+
+        unsigned char*                  internalBuffer;
+        int                             internalBufferLength;
+        bool                            reconnectError;
 
         /**
          *  Maximum bitrate of the output in kbits/sec. If 0, don't care.
@@ -157,10 +267,12 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         }
 
         /**
-         *  Send pending Vorbis blocks to the underlying stream
+         *  Send pending Opus blocks to the underlying stream
          */
         void
-        vorbisBlocksOut( void )                         throw ( Exception );
+        opusBlocksOut( int bytes,
+                       unsigned char* data,
+                       bool eos = false )               throw ( Exception );
 
 
     protected:
@@ -171,7 +283,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        VorbisLibEncoder ( void )                         throw ( Exception )
+        OpusLibEncoder ( void )                         throw ( Exception )
         {
             throw Exception( __FILE__, __LINE__);
         }
@@ -199,7 +311,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        VorbisLibEncoder (  CastSink      * sink,
+        OpusLibEncoder (  CastSink      * sink,
                             unsigned int    inSampleRate,
                             unsigned int    inBitsPerSample,
                             unsigned int    inChannel,
@@ -211,11 +323,11 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int    outChannel    = 0,
                             unsigned int    outMaxBitrate = 0 )
                                                         throw ( Exception )
-            
+
                     : AudioEncoder ( sink,
                                      inSampleRate,
                                      inBitsPerSample,
-                                     inChannel, 
+                                     inChannel,
                                      inBigEndian,
                                      outBitrateMode,
                                      outBitrate,
@@ -244,7 +356,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline
-        VorbisLibEncoder (  CastSink              * sink,
+        OpusLibEncoder (  CastSink              * sink,
                             const AudioSource     * as,
                             BitrateMode             outBitrateMode,
                             unsigned int            outBitrate,
@@ -253,7 +365,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
                             unsigned int            outChannel    = 0,
                             unsigned int            outMaxBitrate = 0 )
                                                             throw ( Exception )
-            
+
                     : AudioEncoder ( sink,
                                      as,
                                      outBitrateMode,
@@ -268,10 +380,10 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         /**
          *  Copy constructor.
          *
-         *  @param encoder the VorbisLibEncoder to copy.
+         *  @param encoder the OpusLibEncoder to copy.
          */
         inline
-        VorbisLibEncoder (  const VorbisLibEncoder &    encoder )
+        OpusLibEncoder (  const OpusLibEncoder &    encoder )
                                                             throw ( Exception )
                     : AudioEncoder( encoder )
         {
@@ -287,7 +399,7 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
          *  @exception Exception
          */
         inline virtual
-        ~VorbisLibEncoder ( void )                         throw ( Exception )
+        ~OpusLibEncoder ( void )                         throw ( Exception )
         {
             if ( isOpen() ) {
                 close();
@@ -298,12 +410,12 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
         /**
          *  Assignment operator.
          *
-         *  @param encoder the VorbisLibEncoder to assign this to.
-         *  @return a reference to this VorbisLibEncoder.
+         *  @param encoder the OpusLibEncoder to assign this to.
+         *  @return a reference to this OpusLibEncoder.
          *  @exception Exception
          */
-        inline virtual VorbisLibEncoder &
-        operator= ( const VorbisLibEncoder &   encoder )   throw ( Exception )
+        inline virtual OpusLibEncoder &
+        operator= ( const OpusLibEncoder &   encoder )   throw ( Exception )
         {
             if( encoder.isOpen() ) {
                 throw Exception(__FILE__, __LINE__, "don't copy open encoders");
@@ -446,5 +558,5 @@ class VorbisLibEncoder : public AudioEncoder, public virtual Reporter
 
 
 
-#endif  /* VORBIS_LIB_ENCODER_H */
+#endif  /* OPUS_LIB_ENCODER_H */
 

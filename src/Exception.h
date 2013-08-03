@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : Exception.h
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/Exception.h $
    
    Copyright notice:
 
@@ -60,7 +60,7 @@
  *  </pre>
  *
  *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @version $Revision: 553 $
  */
 class Exception
 {

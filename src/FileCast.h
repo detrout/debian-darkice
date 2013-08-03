@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : FileCast.h
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/FileCast.h $
    
    Copyright notice:
 
@@ -55,7 +55,7 @@
  *  Class representing output to a local file.
  *
  *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @version $Revision: 553 $
  */
 class FileCast : public CastSink
 {
