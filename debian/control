@@ -3,7 +3,7 @@ Section: sound
 Priority: optional
 Maintainer: Jochen Friedrich <jochen@scram.de>
 Standards-Version: 3.9.2
-Build-Depends: debhelper (>= 7.0.50~), libvorbis-dev, libasound2-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386], libjack-dev, libtwolame-dev, autotools-dev, libpulse-dev
+Build-Depends: debhelper (>= 7.0.50~), libmp3lame-dev, libvorbis-dev, libasound2-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386], libjack-dev, libtwolame-dev, autotools-dev, libpulse-dev
 Homepage: http://code.google.com/p/darkice/
 
 Package: darkice

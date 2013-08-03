@@ -7,4 +7,4 @@
 override_dh_auto_configure:
 	ln -s /usr/share/misc/config.guess .
 	ln -s /usr/share/misc/config.sub .
-	dh_auto_configure -- --prefix=/usr --sysconfdir=/usr/share/doc/darkice/examples --without-lame --without-faac
+	dh_auto_configure -- --prefix=/usr --sysconfdir=/usr/share/doc/darkice/examples --without-faac

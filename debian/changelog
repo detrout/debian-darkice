@@ -7,6 +7,7 @@ darkice (1.2-0r0) UNRELEASED; urgency=low
     * Remove config.guess, config.sub
     * Add them to debian/source/options extend-diff-ignore
     * Add them to gbp.conf [import-orig] filter
+  * Add dependency on libmp3lame-dev
 
  -- Diane Trout <diane@ghic.org>  Sat, 03 Aug 2013 10:26:52 -0700
 
