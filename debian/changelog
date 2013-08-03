@@ -1,6 +1,12 @@
-darkice (1.0-1.1) UNRELEASED; urgency=low
+darkice (1.2-0r0) UNRELEASED; urgency=low
 
   * Update watchfile
+  * Update to new upstream version 1.2
+  * Add dependency on libpulse-dev
+  * Make source easier to rebuild
+    * Remove config.guess, config.sub
+    * Add them to debian/source/options extend-diff-ignore
+    * Add them to gbp.conf [import-orig] filter
 
  -- Diane Trout <diane@ghic.org>  Sat, 03 Aug 2013 10:26:52 -0700
 
