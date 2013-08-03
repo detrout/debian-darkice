@@ -1,3 +1,9 @@
+darkice (1.0-1.1) UNRELEASED; urgency=low
+
+  * Update watchfile
+
+ -- Diane Trout <diane@ghic.org>  Sat, 03 Aug 2013 10:26:52 -0700
+
 darkice (1.0-1) unstable; urgency=low
 
   * New upstream release

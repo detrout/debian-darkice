@@ -1,2 +1,3 @@
 version=3
-http://googlecode.debian.net/p/darkice/darkice-(\d+.*)\.tar\.gz
+http://code.google.com/p/darkice/downloads/list?can=1 \
+         .*/darkice-(\d[\d.]*)\.tar\.gz
