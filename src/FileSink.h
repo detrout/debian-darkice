@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : FileSink.h
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/FileSink.h $
    
    Copyright notice:
 
@@ -52,7 +52,7 @@
  *  File data output
  *
  *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @version $Revision: 553 $
  */
 class FileSink : public Sink, public virtual Reporter
 {

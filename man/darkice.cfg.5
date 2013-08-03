@@ -62,6 +62,10 @@ streaming, "yes" or "no". (optional parameter, defaults to "yes")
 .I realtime
 Use POSIX realtime scheduling, "yes" or "no".
 (optional parameter, defaults to "yes")
+.TP
+.I rtprio 
+Scheduling priority for the realtime threads.
+(optional parameter, defaults to 4)
 
 
 .PP
@@ -74,9 +78,10 @@ Required values:
 .TP
 .I device
 Specify the device to record from, which can be an OSS DSP device,
-an ALSA source or you can use Jack audio.
+an ALSA source, PulseAudio source or you can use Jack audio.
 - OSS DSP audio device to record from (e.g. /dev/dsp)
 - ALSA DSP device name (e.g. hwplug:0,0)
+- for PulseAudio use "pulseaudio"
 - the string 'jack', to have an unconnected Jack port, or
   'jack_auto' to automatically make Jack connect to the first source.
 .TP
@@ -94,6 +99,9 @@ Number of channels to record (e.g. 1 for mono, 2 for stereo)
 .I jackClientName
 The name of the jack input channel created by darkice if device=jack
 is specified.
+.TP
+.I paSourceName
+The name of the PulseAudio source to use. It can be "default", an index or a device string obtained from running "pactl list"
 
 .PP
 .B [icecast-x]
@@ -228,13 +236,13 @@ Required values:
 .I format
 Format of the stream sent to the
 .B IceCast2
-server. Supported formats are 'vorbis', 'mp3', 'mp2', 'aac' and 'aacp'.
+server. Supported formats are 'vorbis', 'opus', 'mp3', 'mp2', 'aac' and 'aacp'.
 .TP
 .I bitrateMode
 The bit rate mode of the encoding, either "cbr", "abr" or "vbr",
 standing for constant bit rate, average bit rate and variable bit
 respectively. Use the bitrate and/or quality values to specify details
-of the appropriate bit rate mode.
+of the appropriate bit rate mode. Ogg Opus only supports 'cbr' and 'abr'.
 .TP
 .I bitrate
 Bit rate to encode to in kBits / sec (e.g. 96). Only used when cbr or
@@ -268,7 +276,8 @@ Optional values:
 .TP
 .I sampleRate
 The sample rate of the encoded output. If not specified, defaults
-to the value of the input sample rate.
+to the value of the input sample rate.  Please note that Ogg Opus
+only supports 48kHz sample rate, and will resample to this rate.
 .TP
 .I channel
 Number of channels for the output (e.g. 1 for mono, 2 for stereo).
@@ -444,7 +453,8 @@ Required values:
 
 .TP
 .I format
-Format to encode in. Must be either 'mp3', 'mp2', 'vorbis', 'aac' or 'aacp'.
+Format to encode in. Must be either 'mp3', 'mp2', 'vorbis', 'opus', 'aac'
+or 'aacp'.
 .TP
 .I bitrateMode
 The bit rate mode of the encoding, either "cbr", "abr" or "vbr",
@@ -672,3 +682,7 @@ homepage:
 .B Ogg Vorbis
 homepage:
 .I http://www.xiph.org/ogg/vorbis/
+
+.B Ogg Opus
+homepage:
+.I http://www.opus-codec.org/

@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : IceCast.cpp
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/IceCast.cpp $
    
    Copyright notice:
 
@@ -67,7 +67,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: IceCast.cpp 474 2010-05-10 01:18:15Z rafael@riseup.net $";
+static const char fileid[] = "$Id: IceCast.cpp 553 2013-07-15 05:50:56Z rafael@riseup.net $";
 
 
 /*------------------------------------------------------------------------------
@@ -198,6 +198,17 @@ IceCast :: sendLogin ( void )                           throw ( Exception )
 
     /* read the anticipated response: "OK" */
     len = source->read( resp, STRBUF_SIZE);
+
+    reportEvent(5,resp);
+
+    if ( Util::strEq( resp, "ERROR - Bad Password",20) ) {
+	throw Exception( __FILE__, __LINE__,
+                         "Icecast - wrong password");
+    }
+    if ( Util::strEq( resp, "ERROR - Mount Point Taken or Inv",32) ) {
+	throw Exception( __FILE__, __LINE__,
+                         "Icecast - Mount point taken or invalid");
+    }
     if ( len < 2 || resp[0] != 'O' || resp[1] != 'K' ) {
         return false;
     }

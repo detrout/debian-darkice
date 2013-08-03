@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : IceCast2.h
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/IceCast2.h $
    
    Copyright notice:
 
@@ -54,7 +54,7 @@
  *  ice login
  *
  *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @version $Revision: 553 $
  */
 class IceCast2 : public CastSink
 {
@@ -63,7 +63,7 @@ class IceCast2 : public CastSink
         /**
          *  Type for specifying the format of the stream.
          */
-       enum StreamFormat { mp3, mp2, oggVorbis, aac, aacp };
+       enum StreamFormat { mp3, mp2, oggVorbis, oggOpus, aac, aacp };
 
 
     private:
@@ -161,8 +161,7 @@ class IceCast2 : public CastSink
                     const char        * url            = 0,
                     const char        * genre          = 0,
                     bool                isPublic       = false,
-                    Sink              * streamDump     = 0,
-                    unsigned int        bufferDuration = 10 )
+                    Sink              * streamDump     = 0 )
                                                         throw ( Exception )
               : CastSink( socket,
                           password,
@@ -171,8 +170,7 @@ class IceCast2 : public CastSink
                           url,
                           genre,
                           isPublic,
-                          streamDump,
-                          bufferDuration )
+                          streamDump )
         {
             init( format, mountPoint, description);
         }

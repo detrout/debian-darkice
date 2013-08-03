@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : Referable.h
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/Referable.h $
    
    Copyright notice:
 
@@ -63,7 +63,7 @@
  *  @ref Ref
  *
  *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @version $Revision: 553 $
  */
 class Referable
 {

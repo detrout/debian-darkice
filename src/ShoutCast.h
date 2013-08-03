@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : ShoutCast.h
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/ShoutCast.h $
    
    Copyright notice:
 
@@ -54,7 +54,7 @@
  *  icy login
  *
  *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @version $Revision: 553 $
  */
 class ShoutCast : public CastSink
 {
@@ -162,8 +162,7 @@ class ShoutCast : public CastSink
                     const char        * irc            = 0,
                     const char        * aim            = 0,
                     const char        * icq            = 0,
-                    Sink              * streamDump     = 0,
-                    unsigned int        bufferDuration = 10 )
+                    Sink              * streamDump     = 0 )
                                                         throw ( Exception )
               : CastSink( socket,
                           password,
@@ -172,8 +171,7 @@ class ShoutCast : public CastSink
                           url,
                           genre,
                           isPublic,
-                          streamDump,
-                          bufferDuration )
+                          streamDump )
         {
             init( irc, aim, icq, mountPoint );
         }

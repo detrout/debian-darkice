@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : Connector.h
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/Connector.h $
    
    Copyright notice:
 
@@ -55,7 +55,7 @@
  *  Connects a source to one or more sinks.
  *
  *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @version $Revision: 553 $
  */
 class Connector : public virtual Referable, public virtual Reporter
 {

@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : FaacEncoder.h
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/FaacEncoder.h $
    
    Copyright notice:
 
@@ -71,7 +71,7 @@
  *  A class representing faac AAC encoder.
  *
  *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @version $Revision: 553 $
  */
 class FaacEncoder : public AudioEncoder, public virtual Reporter
 {

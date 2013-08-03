@@ -6,9 +6,9 @@
    Tyrell DarkIce
 
    File     : SerialUlaw.h
-   Version  : $Revision$
-   Author   : $Author$
-   Location : $HeadURL$
+   Version  : $Revision: 553 $
+   Author   : $Author: rafael@riseup.net $
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/SerialUlaw.h $
    
    Copyright notice:
 
@@ -52,8 +52,8 @@
 /**
  *  An audio input based on /dev/dsp-like raw devices
  *
- *  @author  $Author: darkeye $
- *  @version $Revision: 1.7 $
+ *  @author  $Author: rafael@riseup.net $
+ *  @version $Revision: 553 $
  */
 class SerialUlaw : public AudioSource, public virtual Reporter
 {

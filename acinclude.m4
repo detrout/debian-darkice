@@ -43,7 +43,7 @@ dnl  by Florian Bomers
 dnl-----------------------------------------------------------------------------
 AC_DEFUN([LA_SEARCH_LIB],[
   dnl look for lib
-  LA_SEARCH_FILE($1, $3, $5 $5/lib64 $5/lib )
+  LA_SEARCH_FILE($1, $3, $5 $5/lib64 $5/lib $5/lib/x86_64-linux-gnu )
   dnl look for header.
   LA_SEARCH_FILE($2, $4, $5 $5/include )
   if test ".$1" = "." || test ".$2" = "."; then
@@ -99,7 +99,7 @@ dnl (with help from M. Frigo), as well as ac_pthread and hb_pthread
 dnl macros posted by AFC to the autoconf macro repository.  We are also
 dnl grateful for the helpful feedback of numerous users.
 dnl
-dnl @version $Id: acinclude.m4 400 2007-02-25 17:04:17Z darkeye $
+dnl @version $Id: acinclude.m4 553 2013-07-15 05:50:56Z rafael@riseup.net $
 dnl @author Steven G. Johnson <stevenj@alum.mit.edu> and Alejandro Forero Cuervo <bachue@bachue.com>
 
 AC_DEFUN([ACX_PTHREAD], [

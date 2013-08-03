@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : IceCast.h
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/IceCast.h $
    
    Copyright notice:
 
@@ -54,7 +54,7 @@
  *  x-audiocast login
  *
  *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @version $Revision: 553 $
  */
 class IceCast : public CastSink
 {
@@ -153,8 +153,7 @@ class IceCast : public CastSink
                     const char        * genre          = 0,
                     bool                isPublic       = false,
                     const char        * remoteDumpFile = 0,
-                    Sink              * streamDump     = 0,
-                    unsigned int        bufferDuration = 10 )
+                    Sink              * streamDump     = 0 )
                                                         throw ( Exception )
               : CastSink( socket,
                           password,
@@ -163,8 +162,7 @@ class IceCast : public CastSink
                           url,
                           genre,
                           isPublic,
-                          streamDump,
-                          bufferDuration )
+                          streamDump )
         {
             init( mountPoint, description, remoteDumpFile);
         }

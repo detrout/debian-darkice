@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : Util.cpp
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/Util.cpp $
    
    Copyright notice:
 
@@ -31,6 +31,12 @@
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#ifdef HAVE_ERRNO_H
+#include <errno.h>
+#else
+#error need errno.h
 #endif
 
 #ifdef HAVE_STRING_H
@@ -93,7 +99,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id: Util.cpp 474 2010-05-10 01:18:15Z rafael@riseup.net $";
+static const char fileid[] = "$Id: Util.cpp 553 2013-07-15 05:50:56Z rafael@riseup.net $";
 
 
 /* ===============================================  local function prototypes */
@@ -245,21 +251,23 @@ Util :: strEq( const char    * str1,
  *  Convert a string to a long integer
  *----------------------------------------------------------------------------*/
 long int
-Util :: strToL( const char    * str,
-                int             base )                  throw ( Exception )
+Util :: strToL( const char *str) throw ( Exception )
 {
-    long int    val;
-    char      * s;
+    long int   val;
+    char      *end;
 
-    if ( !str ) {
-        throw Exception( __FILE__, __LINE__, "no str");
-    }
-
-    val = strtol( str, &s, base);
-    if ( s == str || val == LONG_MIN || val == LONG_MAX ) {
-        throw Exception( __FILE__, __LINE__, "number conversion error");
-    }
-
+    if ( NULL == str ) 
+        throw Exception( __FILE__, __LINE__, "null pointer parameter, not string");
+    
+    errno = 0; // set it, strtol() can change it 
+    val = strtol( str, &end, 10); 
+    
+    if (end == str)
+        throw Exception( __FILE__, __LINE__, "number conversion error, not a decimal string");
+    
+    if ((LONG_MIN == val || LONG_MAX ==  val) && ERANGE == errno) 
+        throw Exception( __FILE__, __LINE__, "number conversion error, out of range of type long");
+    
     return val;
 }
 

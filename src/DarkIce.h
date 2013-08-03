@@ -5,9 +5,9 @@
    Tyrell DarkIce
 
    File     : DarkIce.h
-   Version  : $Revision: 474 $
+   Version  : $Revision: 553 $
    Author   : $Author: rafael@riseup.net $
-   Location : $HeadURL$
+   Location : $HeadURL: https://darkice.googlecode.com/svn/darkice/tags/darkice-1_2/src/DarkIce.h $
    
    Copyright notice:
 
@@ -73,7 +73,7 @@
  *  Program main object.
  *
  *  @author  $Author: rafael@riseup.net $
- *  @version $Revision: 474 $
+ *  @version $Revision: 553 $
  */
 class DarkIce : public virtual Referable, public virtual Reporter
 {
@@ -89,7 +89,7 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  Type describing each lame library output.
          */
         typedef struct {
-            Ref<AudioEncoder>       encoder;
+            Ref<Sink>               encoder;
             Ref<TcpSocket>          socket;
             Ref<CastSink>           server;
         } Output;
@@ -123,6 +123,11 @@ class DarkIce : public virtual Referable, public virtual Reporter
          *  Should we turn real-time scheduling on ?
          */
         int                     enableRealTime;
+
+        /**
+         *  Scheduling priority for the realtime threads
+         */
+        int                     realTimeSchedPriority;
 
         /**
          *  Original scheduling policy

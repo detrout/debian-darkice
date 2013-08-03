@@ -6,8 +6,8 @@
    Tyrell DarkIce
 
    File     : SerialUlaw.cpp
-   Version  : $Revision: 1.13 $
-   Author   : $Author: darkeye $
+   Version  : $Revision: 553 $
+   Author   : $Author: rafael@riseup.net $
    Location : $Source: /cvsroot/darkice/darkice/src/SerialUlaw.cpp,v $
    
    Copyright notice:
@@ -38,6 +38,12 @@
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#ifdef HAVE_STDIO_H
+#include <stdio.h>
+#else
+#error need stdio.h
 #endif
 
 #ifdef HAVE_UNISTD_H
@@ -102,7 +108,7 @@
 /*------------------------------------------------------------------------------
  *  File identity
  *----------------------------------------------------------------------------*/
-static const char fileid[] = "$Id$";
+static const char fileid[] = "$Id: SerialUlaw.cpp 553 2013-07-15 05:50:56Z rafael@riseup.net $";
 
 
 /*------------------------------------------------------------------------------
